@@ -460,6 +460,23 @@ function renderProducts() {
   // Render active chips
   renderActiveFilterChips(activeChipsContainer);
 
+  // Check if store database is completely empty
+  const allStoreProducts = db.getProducts();
+  if (allStoreProducts.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1; padding: 48px 20px;">
+        <div class="empty-icon" style="font-size: 3rem; color: var(--primary); margin-bottom: 12px;"><i class="fa-solid fa-store"></i></div>
+        <div class="empty-title" style="font-size: 1.3rem;">Do'kon hozircha bo'sh</div>
+        <div class="empty-desc" style="max-width: 480px; margin: 0 auto 20px auto;">Do'konga hali yangi mahsulotlar kiritilmagan. Administrator panelidan tovarlar qo'shishingiz yoki bir bosishda namunaviy tovarlar to'plamini yuklashingiz mumkin.</div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="admin.html" class="btn-primary"><i class="fa-solid fa-shield-halved"></i> Admin panelga o'tish</a>
+          <button class="btn-secondary" onclick="loadSampleProductsToStorefront()"><i class="fa-solid fa-cloud-arrow-down"></i> Demo tovarlarni yuklash</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
   if (filteredProducts.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
@@ -630,6 +647,7 @@ window.addToCart = function(productId, quantity = 1) {
   db.saveCart(cart);
   updateCartBadge();
   renderCartDrawer();
+  notify.playChime('cart');
   notify.success(`"${product.name}" savatga qo'shildi!`, "Savatga joylandi");
 };
 
@@ -880,8 +898,18 @@ function setupWishlistDrawer() {
     };
 
     if (closeBtn) closeBtn.addEventListener('click', closeWishlist);
+    overlay.addEventListener('click', closeWishlist);
   }
 }
+
+window.loadSampleProductsToStorefront = function() {
+  db.loadSampleProducts();
+  notify.success("Namunaviy mahsulotlar yuklandi!", "Do'kon to'ldirildi 🎉");
+  renderCategories();
+  renderBrandFilters();
+  setupPriceFilter();
+  renderProducts();
+};
 
 /* ============================================================
    MODALS: QUICK VIEW, CHECKOUT, TRACKING, RECEIPT
@@ -1186,6 +1214,8 @@ async function handleCheckoutSubmit(e) {
   updateCartBadge();
 
   closeModal('checkout-modal');
+  const checkoutForm = document.getElementById('checkout-form');
+  if (checkoutForm) checkoutForm.reset();
   notify.playChime('order');
 
   // Try telegram notification

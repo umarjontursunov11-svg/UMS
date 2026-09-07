@@ -30,7 +30,7 @@
         <a href="javascript:void(0)" onclick="openSellerModal()" style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; font-weight: 700;">
           <i class="fa-solid fa-store"></i> Sotuvchi bo'lish
         </a>
-        <a href="javascript:void(0)" id="nav-track-order-btn"><i class="fa-solid fa-location-crosshairs"></i> Buyurtmani kuzatish</a>
+        <a href="javascript:void(0)" id="nav-track-order-btn" onclick="openModal('order-tracking-modal')"><i class="fa-solid fa-location-crosshairs"></i> Buyurtmani kuzatish</a>
         <a href="tel:+998901234567"><i class="fa-solid fa-headset"></i> Aloqa: +998 (90) 123-45-67</a>
       </div>
     </div>
@@ -640,9 +640,9 @@
           <h4>Xizmatlar</h4>
           <div class="footer-links">
             <a href="javascript:void(0)" onclick="openModal('order-tracking-modal')">Buyurtmani kuzatish</a>
-            <a href="javascript:void(0)">Yetkazib berish shartlari</a>
-            <a href="javascript:void(0)">To'lov usullari</a>
-            <a href="javascript:void(0)">Kafolat va qaytarish</a>
+            <a href="javascript:void(0)" onclick="notify.info('O\'zbekiston bo\'ylab standart (24 soat) va tezkor ekspress (2 soat) yetkazib berish mavjud.', 'Yetkazib berish')">Yetkazib berish shartlari</a>
+            <a href="javascript:void(0)" onclick="notify.info('Click, Payme, Uzum Pay orqali onlayn yoki mahsulot yetib borganda naqd pulda to\'lash mumkin.', 'To\'lov usullari')">To'lov usullari</a>
+            <a href="javascript:void(0)" onclick="notify.info('Barcha mahsulotlarga rasmiy kafolat beriladi va 14 kun ichida almashtirish kafolati mavjud.', 'Kafolat')">Kafolat va qaytarish</a>
             <a href="admin.html">Admin Dashboard</a>
           </div>
         </div>
@@ -670,6 +670,7 @@
 
   <!-- Core JavaScript Modules -->
   <script src="./data/initialProducts.js"></script>
+  <script src="./data/sampleDemoData.js"></script>
   <script src="./js/db.js"></script>
   <script src="./js/notifications.js"></script>
   <script src="./js/app.js"></script>
