@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal MegaStore | Zamonaviy Internet Do'kon</title>
+  <meta name="description" content="O'zbekistondagi eng qulay va ishonchli universal internet do'kon. Smartfonlar, elektronika, kiyimlar, uy jihozlari va ko'plab tovarlar eng arzon narxlarda!">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <div class="container top-announcement-inner">
+      <div>
+        <i class="fa-solid fa-truck-bolt"></i> 500,000 so'mdan yuqori barcha xaridlar uchun O'zbekiston bo'ylab <strong>bepul yetkazib berish</strong>!
+      </div>
+      <div class="top-announcement-links">
+        <a href="javascript:void(0)" onclick="openSellerModal()" style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; font-weight: 700;">
+          <i class="fa-solid fa-store"></i> Sotuvchi bo'lish
+        </a>
+        <a href="javascript:void(0)" id="nav-track-order-btn"><i class="fa-solid fa-location-crosshairs"></i> Buyurtmani kuzatish</a>
+        <a href="tel:+998901234567"><i class="fa-solid fa-headset"></i> Aloqa: +998 (90) 123-45-67</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Navbar -->
+  <header class="site-header">
+    <div class="container">
+      <div class="nav-main">
+        <!-- Logo -->
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div class="brand-text">Mega<span>Store</span></div>
+        </a>
+
+        <!-- Smart Search Container -->
+        <div class="search-container">
+          <form class="search-bar" id="global-search-form">
+            <i class="fa-solid fa-magnifying-glass" style="color: var(--text-dim); font-size: 1rem;"></i>
+            <input type="text" id="global-search-input" placeholder="Mahsulotlar, brendlar yoki toifalarni qidiring..." autocomplete="off">
+            <button type="button" class="search-clear-btn" id="search-clear-btn" aria-label="Tozalash">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button type="submit" class="search-submit-btn">
+              <span>Qidirish</span>
+            </button>
+          </form>
+
+          <!-- Live Search Results Dropdown -->
+          <div class="search-dropdown" id="search-dropdown"></div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Seller Button -->
+          <button class="seller-nav-btn" onclick="openSellerModal()" title="Sotuvchi bo'lish va hamkorlik">
+            <i class="fa-solid fa-store"></i>
+            <span>Sotuvchi bo'lish</span>
+          </button>
+
+          <!-- Dark/Light Theme Toggler -->
+          <button class="action-btn" id="theme-toggle-btn" title="Mavzuni almashtirish">
+            <i class="fa-solid fa-sun" id="theme-icon"></i>
+          </button>
+
+          <!-- Wishlist Button -->
+          <button class="action-btn" id="header-wishlist-btn" title="Sevimlilar">
+            <i class="fa-solid fa-heart"></i>
+            <span class="action-badge" id="wishlist-badge-count" style="display: none;">0</span>
+          </button>
+
+          <!-- Cart Button -->
+          <button class="action-btn" id="header-cart-btn" title="Savat">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="action-badge" id="cart-badge-count" style="display: none;">0</span>
+          </button>
+
+          <!-- Admin Panel Link -->
+          <a href="admin.html" class="admin-nav-btn" title="Admin panelga o'tish">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Admin</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Horizontal Category Navigation Bar -->
+  <nav class="category-nav-bar">
+    <div class="container">
+      <div class="category-pills" id="category-pills">
+        <!-- Dynamically populated categories -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        <!-- Hero Main Card -->
+        <div class="hero-main-card">
+          <div class="hero-tag">
+            <i class="fa-solid fa-fire"></i> Katta Mavsumiy Chegirmalar
+          </div>
+          <h1 class="hero-title">Eng So'nggi Texnologiyalar &amp; Premium Sifat</h1>
+          <p class="hero-desc">Barcha toifadagi tovarlarga 25% gacha maxsus chegirmalar va qulay muddatli to'lov imkoniyati.</p>
+          <a href="#store-content" class="hero-btn">
+            <span>Xaridlarni Boshlash</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- Side Promo Cards -->
+        <div class="hero-side-grid">
+          <div class="hero-side-card card-1">
+            <div>
+              <span class="badge badge-new" style="margin-bottom: 8px;">Yangi To'plam</span>
+              <h3>Flagman Smartfonlar</h3>
+              <p>iPhone 15 Pro &amp; Galaxy S24 Ultra rasmiy kafolat bilan.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('smartphones')" class="hero-side-link">
+              <span>Barchasini ko'rish</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="hero-side-card card-2">
+            <div>
+              <span class="badge badge-discount" style="margin-bottom: 8px;">Aksiya</span>
+              <h3>Aqlli Uy &amp; Jihozlar</h3>
+              <p>Robot changyutgichlar va qahva mashinalariga maxsus narxlar.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('home')" class="hero-side-link">
+              <span>Xarid qilish</span> <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Highlight Badges -->
+      <div class="features-bar">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+          <div class="feature-info">
+            <h4>Tezkor Yetkazib Berish</h4>
+            <p>Toshkent bo'ylab 2 soatda, viloyatlarga 24 soatda</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-shield-check"></i></div>
+          <div class="feature-info">
+            <h4>100% Asl Mahsulotlar</h4>
+            <p>1 yillik rasmiy ishlab chiqaruvchi kafolati</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-credit-card"></i></div>
+          <div class="feature-info">
+            <h4>Xavfsiz To'lov</h4>
+            <p>Payme, Click, Uzum va naqd pulda to'lov</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+          <div class="feature-info">
+            <h4>24/7 Qo'llab-quvvatlash</h4>
+            <p>Har qanday savolingizga doim javob beramiz</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Asosiy Sahifa Kategoriyalar Bo'limi (Homepage Categories Grid) -->
+  <section class="home-categories-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-tag"><i class="fa-solid fa-shapes"></i> Bo'limlar</span>
+        <h2 class="section-title">Asosiy Kategoriyalar</h2>
+        <p class="section-subtitle">O'zingizga kerakli bo'limni tanlang va saralangan tovarlarni ko'ring</p>
+      </div>
+
+      <div class="home-categories-grid" id="home-categories-grid">
+        <!-- Dynamically rendered via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Store Section (Sidebar + Product Catalog) -->
+  <section class="store-section" id="store-content">
+    <div class="container">
+      <!-- Store Section Header with Tabs -->
+      <div class="section-heading" style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span class="section-tag" style="background: rgba(239, 68, 68, 0.15); color: var(--danger); border-color: rgba(239, 68, 68, 0.3);">
+              <i class="fa-solid fa-fire"></i> Katta Chegirmalar
+            </span>
+            <h2 class="section-title" id="store-section-title">🔥 Skidkadagi Mahsulotlar</h2>
+            <p class="section-subtitle" id="store-section-subtitle">Eng yuqori chegirmalar va arzon narxlardagi tovarlar</p>
+          </div>
+
+          <!-- Quick Discount / All Products Tabs -->
+          <div class="store-quick-tabs">
+            <button class="store-quick-tab active" id="tab-discount-only" onclick="setDiscountTab(true)">
+              <i class="fa-solid fa-tags"></i> Skidkadagilar
+            </button>
+            <button class="store-quick-tab" id="tab-all-products" onclick="setDiscountTab(false)">
+              <i class="fa-solid fa-boxes-stacked"></i> Barcha Mahsulotlar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="store-layout">
+        
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+          <div class="filter-header">
+            <h3><i class="fa-solid fa-sliders"></i> Filtrlar</h3>
+            <button class="filter-reset-btn" id="reset-filters-btn">Tozalash</button>
+          </div>
+
+          <!-- Quick Toggles -->
+          <div class="filter-group">
+            <div class="filter-title">Maxsus Filtrlash</div>
+            <label class="toggle-item">
+              <span>Faqat Chegirmalar (Skidkalar)</span>
+              <div class="switch">
+                <input type="checkbox" id="filter-discount-toggle" checked>
+                <span class="slider-round"></span>
+              </div>
+            </label>
+            <label class="toggle-item">
+              <span>Faqat Omborda bor</span>
+              <div class="switch">
+                <input type="checkbox" id="filter-stock-toggle">
+                <span class="slider-round"></span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="filter-group">
+            <div class="filter-title">Narx oralig'i (so'm)</div>
+            <div class="price-inputs">
+              <input type="number" id="price-min-input" class="price-input-box" placeholder="0" min="0">
+              <span>-</span>
+              <input type="number" id="price-max-input" class="price-input-box" placeholder="Maks." min="0">
+            </div>
+            <div class="price-slider-container">
+              <input type="range" id="price-slider" class="range-slider" min="0" max="20000000" step="50000">
+            </div>
+            <div class="price-display-label">
+              <span>0 so'm</span>
+              <span id="price-max-label">20,000,000 so'm</span>
+            </div>
+          </div>
+
+          <!-- Category Radio Filter -->
+          <div class="filter-group">
+            <div class="filter-title">Kategoriyalar</div>
+            <div class="filter-checkbox-list" id="sidebar-categories">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Brands Filter -->
+          <div class="filter-group">
+            <div class="filter-title">Brendlar</div>
+            <div class="filter-checkbox-list" id="sidebar-brands">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Rating Stars Filter -->
+          <div class="filter-group">
+            <div class="filter-title">Mijozlar Reytingi</div>
+            <div class="rating-filter-list">
+              <button class="rating-filter-btn" data-rating="4.8">
+                <i class="fa-solid fa-star"></i> 4.8 va undan yuqori
+              </button>
+              <button class="rating-filter-btn" data-rating="4.5">
+                <i class="fa-solid fa-star"></i> 4.5 va undan yuqori
+              </button>
+              <button class="rating-filter-btn" data-rating="4.0">
+                <i class="fa-solid fa-star"></i> 4.0 va undan yuqori
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Products Main Section -->
+        <main class="store-main">
+          <!-- Toolbar Header -->
+          <div class="store-header">
+            <div class="store-stats" id="products-count-label">
+              Yuklanmoqda...
+            </div>
+
+            <div class="store-toolbar-right">
+              <!-- Sort Select -->
+              <div class="sort-box">
+                <span>Saralash:</span>
+                <select class="sort-select" id="sort-select">
+                  <option value="popular">Ommabopligi bo'yicha</option>
+                  <option value="price-asc">Narxi: Arzondan qimmatga</option>
+                  <option value="price-desc">Narxi: Qimmatdan arzonga</option>
+                  <option value="new">Yangi kelganlar</option>
+                  <option value="rating">Reyting bo'yicha</option>
+                  <option value="discount">Katta chegirmalar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filter Chips -->
+          <div class="active-filters-chips" id="active-filters-chips"></div>
+
+          <!-- Product Grid -->
+          <div class="products-grid" id="products-grid">
+            <!-- Dynamically populated product cards -->
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick View Modal -->
+  <div class="modal-overlay" id="quickview-modal">
+    <div class="modal-content" style="max-width: 860px;">
+      <button class="modal-close-btn" onclick="closeModal('quickview-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="quickview-modal-body">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="drawer" id="cart-drawer">
+    <div class="drawer-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Savatcha</h3>
+      <button class="modal-close-btn" id="cart-drawer-close" style="position: static;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body" id="cart-items-container">
+      <!-- Injected via JS -->
+    </div>
+    <div class="drawer-footer">
+      <!-- Promo Code Input -->
+      <div class="promo-input-row">
+        <input type="text" class="promo-input" id="cart-promo-input" placeholder="Promokod (masalan: SUPER10)">
+        <button class="promo-apply-btn" id="cart-promo-apply">Qo'llash</button>
+      </div>
+
+      <div class="cart-summary-row">
+        <span>Mahsulotlar summasi:</span>
+        <span id="cart-subtotal">0 so'm</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Chegirma:</span>
+        <span id="cart-discount" style="color: var(--success);">0 so'm</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Yetkazib berish:</span>
+        <span id="cart-shipping">0 so'm</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Jami to'lov:</span>
+        <span id="cart-total">0 so'm</span>
+      </div>
+
+      <button class="checkout-btn" id="cart-checkout-btn">
+        <span>Rasmiylashtirish</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Wishlist Drawer -->
+  <div class="drawer" id="wishlist-drawer">
+    <div class="drawer-header">
+      <h3><i class="fa-solid fa-heart" style="color: var(--secondary);"></i> Sevimlilar</h3>
+      <button class="modal-close-btn" id="wishlist-drawer-close" style="position: static;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body" id="wishlist-items-container">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+  <!-- Drawer Overlay Backdrop -->
+  <div class="modal-overlay" id="drawer-overlay"></div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-content checkout-modal-content">
+      <button class="modal-close-btn" onclick="closeModal('checkout-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <h2 class="checkout-modal-title">Buyurtmani Rasmiylashtirish</h2>
+      <p class="checkout-modal-subtitle">Yetkazib berish va to'lov ma'lumotlarini kiriting</p>
+
+      <div id="checkout-summary-details"></div>
+
+      <form id="checkout-form">
+        <div class="checkout-form-grid">
+          <div class="form-group">
+            <label class="form-label">To'liq Ismingiz *</label>
+            <input type="text" class="form-input" id="checkout-name" placeholder="Masalan: Sardor Aliyev" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Telefon Raqamingiz *</label>
+            <input type="tel" class="form-input" id="checkout-phone" placeholder="+998 (90) 123-45-67" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Shahar / Viloyat *</label>
+            <select class="form-select" id="checkout-city" required>
+              <option value="Toshkent shahri">Toshkent shahri</option>
+              <option value="Toshkent viloyati">Toshkent viloyati</option>
+              <option value="Samarqand">Samarqand</option>
+              <option value="Buxoro">Buxoro</option>
+              <option value="Andijon">Andijon</option>
+              <option value="Farg'ona">Farg'ona</option>
+              <option value="Namangan">Namangan</option>
+              <option value="Qashqadaryo">Qashqadaryo</option>
+              <option value="Surxondaryo">Surxondaryo</option>
+              <option value="Xorazm">Xorazm</option>
+              <option value="Navoiy">Navoiy</option>
+              <option value="Jizzax">Jizzax</option>
+              <option value="Sirdaryo">Sirdaryo</option>
+              <option value="Qoraqalpog'iston">Qoraqalpog'iston Resp.</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Yetkazib berish turi</label>
+            <div style="display: flex; gap: 12px; margin-top: 6px;">
+              <label class="checkbox-label" style="font-size: 0.85rem;">
+                <input type="radio" name="checkout-delivery" value="standard" checked> Standart (24 soat)
+              </label>
+              <label class="checkbox-label" style="font-size: 0.85rem;">
+                <input type="radio" name="checkout-delivery" value="express"> Tezkor (2 soat)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label">Aniq Manzil (Ko'cha, uy, xonadon) *</label>
+            <input type="text" class="form-input" id="checkout-address" placeholder="Masalan: Chilonzor 9, 12-uy, 45-xonadon" required>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label">Kuryer uchun izoh (Ixtiyoriy)</label>
+            <input type="text" class="form-input" id="checkout-notes" placeholder="Masalan: Eshik kodi, mo'ljal...">
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label">To'lov Usulini Tanlang</label>
+            <div class="payment-methods-grid">
+              <label class="payment-card-label">
+                <input type="radio" name="checkout-payment" value="Click" checked>
+                <div class="payment-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="payment-name">Click</div>
+              </label>
+              <label class="payment-card-label">
+                <input type="radio" name="checkout-payment" value="Payme">
+                <div class="payment-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <div class="payment-name">Payme</div>
+              </label>
+              <label class="payment-card-label">
+                <input type="radio" name="checkout-payment" value="Uzum Pay">
+                <div class="payment-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="payment-name">Uzum Pay</div>
+              </label>
+              <label class="payment-card-label">
+                <input type="radio" name="checkout-payment" value="Naqd pul">
+                <div class="payment-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="payment-name">Naqd pul</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="margin-top: 24px;">
+          <i class="fa-solid fa-check-double"></i>
+          <span>Buyurtmani Tasdiqlash</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Seller Application Modal (Sotuvchi bo'lish arizasi) -->
+  <div class="modal-overlay" id="seller-modal">
+    <div class="modal-content checkout-modal-content" style="max-width: 620px;">
+      <button class="modal-close-btn" onclick="closeModal('seller-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
+        <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.3rem; background: linear-gradient(135deg, var(--secondary), #f43f5e);">
+          <i class="fa-solid fa-store"></i>
+        </div>
+        <div>
+          <h2 class="checkout-modal-title" style="margin-bottom: 2px;">Sotuvchi / Hamkor Bo'lish</h2>
+          <p class="checkout-modal-subtitle" style="margin-bottom: 0;">O'z tovarlaringizni MegaStore orqali butun O'zbekistonga soting</p>
+        </div>
+      </div>
+
+      <div style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: var(--radius-md); padding: 12px 16px; margin: 16px 0 20px 0; font-size: 0.85rem;">
+        <i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 1.1rem; margin-right: 6px;"></i>
+        Arizangiz to'g'ridan-to'g'ri Telegram botimizga yuboriladi va tez orada siz bilan bog'lanamiz.
+      </div>
+
+      <form id="seller-application-form">
+        <div class="checkout-form-grid">
+          <div class="form-group">
+            <label class="form-label">To'liq Ismingiz *</label>
+            <input type="text" class="form-input" id="seller-name" placeholder="Masalan: Sardor Rustamov" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Telefon Raqamingiz *</label>
+            <input type="tel" class="form-input" id="seller-phone" placeholder="+998 (90) 123-45-67" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Do'kon yoki Brend Nomi</label>
+            <input type="text" class="form-input" id="seller-shop" placeholder="Masalan: EcoTex, TexnoBrand...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mahsulotlar Toifasi *</label>
+            <select class="form-select" id="seller-category" required>
+              <option value="Elektronika & Gadjetlar">Elektronika & Gadjetlar</option>
+              <option value="Smartfonlar & Aksessuarlar">Smartfonlar & Aksessuarlar</option>
+              <option value="Kiyim-kechak & Moda">Kiyim-kechak & Moda</option>
+              <option value="Uy & Oshxona Jihozlari">Uy & Oshxona Jihozlari</option>
+              <option value="Go'zallik & Salomatlik">Go'zallik & Salomatlik</option>
+              <option value="Kitoblar & Kantselyariya">Kitoblar & Kantselyariya</option>
+              <option value="Avtotovarlar">Avtotovarlar</option>
+              <option value="Sport & Sayohat">Sport & Sayohat</option>
+              <option value="Boshqa mahsulotlar">Boshqa toifadagi mahsulotlar</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label">Shahar / Viloyat *</label>
+            <input type="text" class="form-input" id="seller-city" placeholder="Masalan: Toshkent shahri yoki Samarqand" required>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label class="form-label">Qo'shimcha taklif yoki tavsif</label>
+            <textarea class="form-textarea" id="seller-comment" rows="3" placeholder="Sotmoqchi bo'lgan mahsulotlaringiz assortimenti, narxlari va takliflaringiz haqida qisqacha yozing..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="margin-top: 20px; background: linear-gradient(135deg, var(--secondary), #f43f5e); box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Arizani Telegram Botga Yuborish</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Receipt Modal -->
+  <div class="modal-overlay" id="order-receipt-modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div id="order-receipt-body"></div>
+    </div>
+  </div>
+
+  <!-- Order Tracking Modal -->
+  <div class="modal-overlay" id="order-tracking-modal">
+    <div class="modal-content" style="max-width: 580px; padding: 28px;">
+      <button class="modal-close-btn" onclick="closeModal('order-tracking-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px;">Buyurtmani Kuzatish</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Buyurtmangizning ID kodini kiriting (masalan: ORD-89421)</p>
+
+      <form id="order-tracking-form" style="display: flex; gap: 8px;">
+        <input type="text" id="tracking-order-input" class="form-input" placeholder="Buyurtma kodi..." required style="text-transform: uppercase;">
+        <button type="submit" class="btn-primary">
+          <i class="fa-solid fa-magnifying-glass"></i> Kuzatish
+        </button>
+      </form>
+
+      <div id="tracking-result"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo">
+            <div class="brand-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="brand-text">Mega<span>Store</span></div>
+          </a>
+          <p>O'zbekistondagi eng qulay, zamonaviy va xavfsiz universal internet do'koni. Barcha mahsulotlar asl nusxa va kafolatlangan.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Kategoriyalar</h4>
+          <div class="footer-links">
+            <a href="javascript:void(0)" onclick="setCategoryFilter('smartphones')">Smartfonlar</a>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('electronics')">Elektronika &amp; Gadjetlar</a>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('clothing')">Kiyim &amp; Moda</a>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('home')">Uy Jihozlari</a>
+            <a href="javascript:void(0)" onclick="setCategoryFilter('beauty')">Go'zallik &amp; Salomatlik</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Xizmatlar</h4>
+          <div class="footer-links">
+            <a href="javascript:void(0)" onclick="openModal('order-tracking-modal')">Buyurtmani kuzatish</a>
+            <a href="javascript:void(0)">Yetkazib berish shartlari</a>
+            <a href="javascript:void(0)">To'lov usullari</a>
+            <a href="javascript:void(0)">Kafolat va qaytarish</a>
+            <a href="admin.html">Admin Dashboard</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Biz bilan aloqa</h4>
+          <div class="footer-links">
+            <div><i class="fa-solid fa-phone" style="color: var(--primary); margin-right: 6px;"></i> +998 (90) 123-45-67</div>
+            <div><i class="fa-solid fa-envelope" style="color: var(--primary); margin-right: 6px;"></i> support@megastore.uz</div>
+            <div><i class="fa-solid fa-location-dot" style="color: var(--primary); margin-right: 6px;"></i> Toshkent sh., Amir Temur 45</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 MegaStore. Barcha huquqlar himoyalangan.</div>
+        <div style="display: flex; gap: 16px; font-size: 1.2rem;">
+          <i class="fa-brands fa-telegram" style="color: #0088cc; cursor: pointer;"></i>
+          <i class="fa-brands fa-instagram" style="color: #e4405f; cursor: pointer;"></i>
+          <i class="fa-brands fa-facebook" style="color: #1877f2; cursor: pointer;"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript Modules -->
+  <script src="data/initialProducts.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

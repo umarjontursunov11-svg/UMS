@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MegaStore | Admin Dashboard &amp; Boshqaruv Markazi</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="admin-brand-icon">
+        <i class="fa-solid fa-gauge-high"></i>
+      </div>
+      <div>
+        <div class="admin-brand-title">MegaStore</div>
+        <div class="admin-brand-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <div class="admin-nav-item active" data-target="section-dashboard">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Boshqaruv Paneli</span>
+      </div>
+
+      <div class="admin-nav-item" data-target="section-orders">
+        <i class="fa-solid fa-cart-flatbed"></i>
+        <span>Buyurtmalar</span>
+        <span class="admin-nav-badge" id="nav-pending-badge" style="display: none;">0</span>
+      </div>
+
+      <div class="admin-nav-item" data-target="section-products">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span>Mahsulotlar</span>
+      </div>
+
+      <div class="admin-nav-item" data-target="section-categories">
+        <i class="fa-solid fa-tags"></i>
+        <span>Kategoriyalar</span>
+      </div>
+
+      <div class="admin-nav-item" data-target="section-promos">
+        <i class="fa-solid fa-ticket"></i>
+        <span>Promokodlar</span>
+      </div>
+
+      <div class="admin-nav-item" data-target="section-settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Sozlamalar &amp; Bot</span>
+      </div>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <a href="index.html" class="view-store-link" target="_blank">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>Do'konni Ko'rish</span>
+      </a>
+      <button class="action-btn" style="width: 32px; height: 32px; font-size: 0.9rem;" onclick="resetStoreDatabase()" title="Bazani tozalash">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin Main Content Area -->
+  <div class="admin-main">
+    
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div class="admin-page-title">
+        <h2 id="admin-page-title-text">Boshqaruv Paneli (Dashboard)</h2>
+        <p id="admin-page-sub-text">Sotuvlar, buyurtmalar va umumiy do'kon ko'rsatkichlari</p>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <button class="action-btn" id="admin-theme-btn" title="Mavzuni o'zgartirish">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <button class="btn-primary" id="admin-add-product-btn">
+          <i class="fa-solid fa-plus"></i>
+          <span>Yangi Mahsulot</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Sections Container -->
+    <div class="admin-content">
+
+      <!-- SECTION 1: DASHBOARD OVERVIEW -->
+      <section class="admin-section active" id="section-dashboard">
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-box stat-icon-revenue">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+            <div class="stat-info">
+              <h5>Jami Tushum</h5>
+              <div class="stat-value" id="stat-total-revenue">0 so'm</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-box stat-icon-orders">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div class="stat-info">
+              <h5>Jami Buyurtmalar</h5>
+              <div class="stat-value" id="stat-total-orders">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-box stat-icon-pending">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="stat-info">
+              <h5>Kutilayotgan</h5>
+              <div class="stat-value" id="stat-pending-orders">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-box stat-icon-products">
+              <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div class="stat-info">
+              <h5>Mahsulotlar Soni</h5>
+              <div class="stat-value" id="stat-total-products">0 dona</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales Chart & Top Selling Grid -->
+        <div class="dashboard-visuals-grid">
+          <div class="dashboard-card">
+            <div class="dashboard-card-header">
+              <h3><i class="fa-solid fa-chart-column" style="color: var(--primary); margin-right: 8px;"></i> So'nggi 7 Kunlik Sotuvlar Grafigi</h3>
+            </div>
+            <div class="sales-chart-bars" id="sales-bars-container">
+              <!-- Visual bars generated via JS -->
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="dashboard-card-header">
+              <h3><i class="fa-solid fa-fire" style="color: var(--secondary); margin-right: 8px;"></i> Eng Xaridorgir Tovarlar</h3>
+            </div>
+            <div class="top-products-list" id="top-selling-list">
+              <!-- Generated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: ORDERS MANAGEMENT -->
+      <section class="admin-section" id="section-orders">
+        <div class="table-container">
+          <div class="table-toolbar">
+            <div class="table-search">
+              <i class="fa-solid fa-magnifying-glass" style="color: var(--text-dim);"></i>
+              <input type="text" id="orders-search-input" placeholder="Buyurtma ID, mijoz ismi yoki tel...">
+            </div>
+
+            <div class="table-filter-tabs">
+              <button class="tab-btn order-tab-btn active" data-status="all">Barchasi</button>
+              <button class="tab-btn order-tab-btn" data-status="pending">Yangi</button>
+              <button class="tab-btn order-tab-btn" data-status="processing">Tayyorlanmoqda</button>
+              <button class="tab-btn order-tab-btn" data-status="shipping">Yetkazilmoqda</button>
+              <button class="tab-btn order-tab-btn" data-status="completed">Bajarildi</button>
+              <button class="tab-btn order-tab-btn" data-status="cancelled">Bekor qilingan</button>
+            </div>
+          </div>
+
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID Kodi</th>
+                <th>Mijoz</th>
+                <th>Mahsulotlar</th>
+                <th>Jami Summa</th>
+                <th>Holat</th>
+                <th>Vaqti</th>
+                <th>Amallar</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 3: PRODUCTS MANAGEMENT -->
+      <section class="admin-section" id="section-products">
+        <div class="table-container">
+          <div class="table-toolbar">
+            <div class="table-search">
+              <i class="fa-solid fa-magnifying-glass" style="color: var(--text-dim);"></i>
+              <input type="text" id="admin-product-search" placeholder="Mahsulot nomi yoki brendi...">
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <select class="form-select" id="admin-product-cat-filter" style="padding: 6px 14px; font-size: 0.85rem;">
+                <option value="all">Barcha toifalar</option>
+              </select>
+
+              <button class="btn-secondary" onclick="loadSampleProductsToStore()" title="Namunaviy tovarlarni yuklash" style="font-size: 0.8rem; padding: 7px 12px;">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Demo yuklash
+              </button>
+
+              <button class="btn-secondary" onclick="clearAllProductsFromStore()" title="Barcha tovarlarni o'chirish" style="font-size: 0.8rem; padding: 7px 12px; color: var(--danger);">
+                <i class="fa-solid fa-trash-can"></i> Tozalash
+              </button>
+            </div>
+          </div>
+
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Mahsulot</th>
+                <th>Kategoriya</th>
+                <th>Narxi</th>
+                <th>Ombordagi Soni</th>
+                <th>Reyting</th>
+                <th>Amallar</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 4: CATEGORIES MANAGEMENT -->
+      <section class="admin-section" id="section-categories">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+          <button class="btn-primary" onclick="addNewCategory()">
+            <i class="fa-solid fa-plus"></i> Yangi Kategoriya Qo'shish
+          </button>
+        </div>
+        <div class="cards-grid-admin" id="admin-categories-list">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 5: PROMOS MANAGEMENT -->
+      <section class="admin-section" id="section-promos">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+          <button class="btn-primary" onclick="addNewPromo()">
+            <i class="fa-solid fa-plus"></i> Yangi Promokod Yaratish
+          </button>
+        </div>
+        <div class="cards-grid-admin" id="admin-promos-list">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 6: SETTINGS & TELEGRAM BOT -->
+      <section class="admin-section" id="section-settings">
+        <div class="settings-box">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">Do'kon va Telegram Bot Sozlamalari</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Yangi buyurtmalar kelganda admin Telegram botiga avtomatik bildirishnoma yuborishni sozlang.</p>
+
+          <form id="settings-form">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <label class="form-label">Do'kon Nomi</label>
+                <input type="text" class="form-input" id="set-store-name" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <label class="form-label">Telefon Raqam</label>
+                  <input type="text" class="form-input" id="set-phone">
+                </div>
+                <div>
+                  <label class="form-label">Email Manzili</label>
+                  <input type="email" class="form-input" id="set-email">
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Do'kon Manzili</label>
+                <input type="text" class="form-input" id="set-address">
+              </div>
+
+              <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 10px 0;">
+
+              <h4 style="font-size: 1rem; font-weight: 700;"><i class="fa-brands fa-telegram" style="color: #0088cc;"></i> Telegram Bot Bildirishnomalari</h4>
+
+              <label class="toggle-item" style="margin-bottom: 6px;">
+                <span>Telegram orqali bildirishnomalarni yoqish</span>
+                <div class="switch">
+                  <input type="checkbox" id="set-tg-enable">
+                  <span class="slider-round"></span>
+                </div>
+              </label>
+
+              <div>
+                <label class="form-label">Telegram Bot Token (BotFather dan olingan token)</label>
+                <input type="text" class="form-input" id="set-tg-token" placeholder="Masalan: 7123456789:AAFx...">
+              </div>
+
+              <div>
+                <label class="form-label">Telegram Chat ID (Admin yoki guruh ID raqami)</label>
+                <input type="text" class="form-input" id="set-tg-chatid" placeholder="Masalan: 123456789 yoki -100123456789">
+                <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                  <button type="button" class="btn-secondary" id="auto-detect-chatid-btn" style="font-size: 0.8rem; padding: 6px 12px;">
+                    <i class="fa-solid fa-robot"></i> Chat ID ni avtomatik aniqlash
+                  </button>
+                  <a href="https://t.me/universalmegastore_bot" target="_blank" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px; color: #0088cc;">
+                    <i class="fa-brands fa-telegram"></i> @universalmegastore_bot ga kirish
+                  </a>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap;">
+                <button type="submit" class="btn-primary">
+                  <i class="fa-solid fa-floppy-disk"></i> Sozlamalarni Saqlash
+                </button>
+                <button type="button" class="btn-secondary" id="test-telegram-btn">
+                  <i class="fa-solid fa-paper-plane"></i> Sinov Xabarini Yuborish
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Product Modal (Add / Edit) -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-content" style="max-width: 680px; padding: 30px;">
+      <button class="modal-close-btn" onclick="closeModal('product-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 20px;" id="product-modal-title">Yangi Mahsulot Qo'shish</h2>
+
+      <form id="product-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div style="grid-column: 1 / -1;">
+            <label class="form-label">Mahsulot Nomi *</label>
+            <input type="text" class="form-input" id="prod-input-name" placeholder="Masalan: iPhone 15 Pro Max 256GB" required>
+          </div>
+
+          <div>
+            <label class="form-label">Kategoriya *</label>
+            <select class="form-select" id="prod-input-cat" required></select>
+          </div>
+
+          <div>
+            <label class="form-label">Brend *</label>
+            <input type="text" class="form-input" id="prod-input-brand" placeholder="Masalan: Apple, Samsung..." required>
+          </div>
+
+          <div>
+            <label class="form-label">Sotuv Narxi (so'm) *</label>
+            <input type="number" class="form-input" id="prod-input-price" placeholder="100000" min="0" required>
+          </div>
+
+          <div>
+            <label class="form-label">Eski Narxi (so'm - chegirma uchun)</label>
+            <input type="number" class="form-input" id="prod-input-oldprice" placeholder="120000" min="0">
+          </div>
+
+          <div>
+            <label class="form-label">Ombordagi Soni *</label>
+            <input type="number" class="form-input" id="prod-input-stock" placeholder="10" min="0" required>
+          </div>
+
+          <div>
+            <label class="form-label">Rasm URL manzili *</label>
+            <input type="url" class="form-input" id="prod-input-img" placeholder="https://images.unsplash.com/..." required>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="form-label">Rasm ko'rinishi (Preview):</label>
+            <img id="prod-img-preview" src="https://placehold.co/400x300?text=Rasm+Yuklang" style="width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label class="form-label">Batafsil Tavsifi</label>
+            <textarea class="form-textarea" id="prod-input-desc" rows="3" placeholder="Mahsulot haqida ma'lumot..."></textarea>
+          </div>
+
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="prod-input-featured">
+              <span>Aksiya (Featured) sifatida ko'rsatish</span>
+            </label>
+          </div>
+
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="prod-input-popular">
+              <span>Trend (Ommabop) sifatida belgilash</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-secondary" onclick="closeModal('product-modal')">Bekor qilish</button>
+          <button type="submit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Order Details Modal -->
+  <div class="modal-overlay" id="admin-order-modal">
+    <div class="modal-content" style="max-width: 760px;">
+      <button class="modal-close-btn" onclick="closeModal('admin-order-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="admin-order-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Core JavaScript Modules -->
+  <script src="data/initialProducts.js"></script>
+  <script src="data/sampleDemoData.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
