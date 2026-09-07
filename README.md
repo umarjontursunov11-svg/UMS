@@ -4,7 +4,10 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?logo=github)](https://umarjontursunov11-svg.github.io/UMS/)
+
+> 🌐 **Jonli Sayt (Live Web Store):** [https://umarjontursunov11-svg.github.io/UMS/](https://umarjontursunov11-svg.github.io/UMS/)  
+> 👑 **Boshqaruv Paneli (Admin Dashboard):** [https://umarjontursunov11-svg.github.io/UMS/admin.html](https://umarjontursunov11-svg.github.io/UMS/admin.html)
 
 O'zbekistondagi har qanday biznes uchun to'liq moslashtirilgan, zamonaviy **Glassmorphism dizayn**, kuchli **aqlli qidiruv (Smart Search)**, to'liq **buyurtma berish (Checkout)** tizimi hamda keng qamrovli **Administrator Paneli**ga ega universal internet do'kon platformasi.
 
