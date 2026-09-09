@@ -48,7 +48,8 @@ function updateThemeIcon(theme) {
   }
 }
 
-function initApp() {
+async function initApp() {
+  await db.syncFromSupabase();
   renderCategories();
   renderBrandFilters();
   setupPriceFilter();
@@ -981,7 +982,8 @@ async function handleSellerSubmit(e) {
     return;
   }
 
-  const sellerData = { name, phone, shopName, category, city, comment };
+  const sellerData = { name, phone, shop: shopName, shopName, category, city, comment };
+  db.saveSellerApplication(sellerData);
   const settings = db.getSettings();
 
   notify.info("Arizangiz Telegram botga yuborilmoqda...");

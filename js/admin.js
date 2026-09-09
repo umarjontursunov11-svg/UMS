@@ -27,7 +27,8 @@ function initAdminTheme() {
   }
 }
 
-function initAdminDashboard() {
+async function initAdminDashboard() {
+  await db.syncFromSupabase();
   setupNavigation();
   renderDashboardOverview();
   renderOrdersTable();

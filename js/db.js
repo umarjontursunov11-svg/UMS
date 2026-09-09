@@ -1,7 +1,10 @@
 /**
- * Universal E-Magazin Database Manager
- * Ma'lumotlarni boshqarish, saqlash, qidirish va filtrlash tizimi.
+ * Universal E-Magazin Database Manager & Supabase Cloud Sync
+ * LocalStorage + Supabase PostgreSQL Cloud Integration
  */
+
+const SUPABASE_URL = 'https://fwuqtrfoenejodufnwyb.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dXF0cmZvZW5lam9kdWZud3liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTcxOTAsImV4cCI6MjEwNDUzMzE5MH0.lSQD5F_XWarHdale9l7f0thA-njNjxqaz1ncaC5oK4o';
 
 const STORAGE_KEYS = {
   PRODUCTS: 'megastore_products_v1',
@@ -17,10 +20,11 @@ const STORAGE_KEYS = {
 class StoreDB {
   constructor() {
     this.initDatabase();
+    this.initSupabase();
   }
 
   initDatabase() {
-    // Initial data seeding
+    // Initial data seeding fallback
     if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
       if (typeof initialProducts !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(initialProducts));
@@ -58,6 +62,126 @@ class StoreDB {
     }
   }
 
+  initSupabase() {
+    try {
+      if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+        this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("⚡ Supabase Cloud DB faollashtirildi");
+      }
+    } catch (e) {
+      console.warn("Supabase ulanishda ogohlantirish:", e);
+      this.supabase = null;
+    }
+  }
+
+  async syncFromSupabase() {
+    if (!this.supabase) this.initSupabase();
+    if (!this.supabase) return false;
+
+    try {
+      // 1. Fetch categories
+      const { data: catData, error: catErr } = await this.supabase.from('categories').select('*');
+      if (!catErr && catData && catData.length) {
+        const mappedCategories = catData.map(c => ({
+          id: c.id,
+          name: c.name,
+          icon: c.icon || 'fa-solid fa-folder'
+        }));
+        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(mappedCategories));
+      }
+
+      // 2. Fetch products
+      const { data: prodData, error: prodErr } = await this.supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (!prodErr && prodData && prodData.length) {
+        const mappedProducts = prodData.map(p => ({
+          id: p.id,
+          name: p.name,
+          category: p.category_id || p.category || 'electronics',
+          brand: p.brand || 'Boshqa',
+          price: Number(p.price) || 0,
+          oldPrice: p.old_price ? Number(p.old_price) : null,
+          discount: p.discount || 0,
+          rating: p.rating ? Number(p.rating) : 5.0,
+          reviewsCount: p.reviews_count || 0,
+          stock: p.stock || 0,
+          isPopular: !!p.is_popular,
+          isNew: !!p.is_new,
+          isFeatured: !!p.is_featured,
+          image: p.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
+          images: p.images || [p.image],
+          description: p.description || "",
+          tags: [p.name.toLowerCase(), (p.category_id || '').toLowerCase()]
+        }));
+        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(mappedProducts));
+      }
+
+      // 3. Fetch promos
+      const { data: promoData, error: promoErr } = await this.supabase.from('promos').select('*');
+      if (!promoErr && promoData && promoData.length) {
+        const mappedPromos = promoData.map(pr => ({
+          code: pr.code,
+          discountPercent: pr.discount_percent,
+          minAmount: Number(pr.min_amount) || 0,
+          description: pr.description || ""
+        }));
+        localStorage.setItem(STORAGE_KEYS.PROMOS, JSON.stringify(mappedPromos));
+      }
+
+      // 4. Fetch orders
+      const { data: orderData, error: orderErr } = await this.supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (!orderErr && orderData && orderData.length) {
+        const mappedOrders = orderData.map(o => ({
+          id: o.id,
+          date: o.created_at,
+          customer: {
+            name: o.customer_name,
+            phone: o.customer_phone,
+            address: o.customer_address,
+            city: o.customer_city || "Toshkent shahri",
+            notes: o.customer_notes || ""
+          },
+          items: o.items || [],
+          subtotal: Number(o.subtotal) || 0,
+          discountAmount: Number(o.discount_amount) || 0,
+          promoCode: o.promo_code || null,
+          shippingCost: Number(o.shipping_cost) || 0,
+          totalAmount: Number(o.total_amount) || 0,
+          paymentMethod: o.payment_method || "Naqd pul",
+          deliveryType: o.delivery_type || "standard",
+          status: o.status || "pending",
+          statusHistory: [
+            { status: o.status || "pending", time: o.created_at, note: "Supabase Bulut Bazasidan yuklandi" }
+          ]
+        }));
+        localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(mappedOrders));
+      }
+
+      // 5. Fetch store settings
+      const { data: settingsData, error: setErr } = await this.supabase.from('store_settings').select('*').limit(1).maybeSingle();
+      if (!setErr && settingsData) {
+        const mappedSettings = {
+          storeName: settingsData.store_name,
+          phone: settingsData.phone,
+          email: settingsData.email,
+          address: settingsData.address,
+          telegramToken: settingsData.telegram_bot_token,
+          telegramChatId: settingsData.telegram_chat_id,
+          notificationsEnabled: settingsData.telegram_notifications_enabled,
+          freeShippingThreshold: Number(settingsData.free_shipping_threshold) || 500000,
+          standardShippingCost: Number(settingsData.standard_shipping_cost) || 20000,
+          expressShippingCost: Number(settingsData.express_shipping_cost) || 45000
+        };
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(mappedSettings));
+      }
+
+      console.log("✅ Supabase bulut ma'lumotlar ombori muvaffaqiyatli sinxronlandi!");
+      return true;
+    } catch (err) {
+      console.warn("Supabase sinxronizatsiyasida xatolik:", err);
+      return false;
+    }
+  }
+
   loadSampleProducts() {
     if (typeof sampleDemoProducts !== 'undefined') {
       localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(sampleDemoProducts));
@@ -91,45 +215,79 @@ class StoreDB {
 
   saveProduct(productData) {
     const products = this.getProducts();
+    let savedProduct = null;
+
     if (productData.id) {
       // Update existing
       const index = products.findIndex(p => p.id === productData.id);
       if (index !== -1) {
         products[index] = { ...products[index], ...productData };
-        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-        return products[index];
+        savedProduct = products[index];
       }
     }
-    // Create new
-    const newProduct = {
-      id: "prod-" + Date.now().toString(36),
-      name: productData.name,
-      category: productData.category || "electronics",
-      brand: productData.brand || "Boshqa",
-      price: Number(productData.price) || 0,
-      oldPrice: Number(productData.oldPrice) || (Number(productData.price) * 1.15),
-      discount: productData.discount ? Number(productData.discount) : (productData.oldPrice ? Math.round(((productData.oldPrice - productData.price) / productData.oldPrice) * 100) : 0),
-      rating: Number(productData.rating) || 5.0,
-      reviewsCount: Number(productData.reviewsCount) || 1,
-      stock: Number(productData.stock) || 10,
-      isPopular: !!productData.isPopular,
-      isNew: productData.isNew !== undefined ? !!productData.isNew : true,
-      isFeatured: !!productData.isFeatured,
-      image: productData.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
-      images: productData.images || [productData.image],
-      description: productData.description || "",
-      tags: productData.tags || [productData.name.toLowerCase(), productData.category],
-      specs: productData.specs || {}
-    };
-    products.unshift(newProduct);
+
+    if (!savedProduct) {
+      // Create new
+      savedProduct = {
+        id: productData.id || "prod-" + Date.now().toString(36),
+        name: productData.name,
+        category: productData.category || "electronics",
+        brand: productData.brand || "Boshqa",
+        price: Number(productData.price) || 0,
+        oldPrice: Number(productData.oldPrice) || (Number(productData.price) * 1.15),
+        discount: productData.discount ? Number(productData.discount) : (productData.oldPrice ? Math.round(((productData.oldPrice - productData.price) / productData.oldPrice) * 100) : 0),
+        rating: Number(productData.rating) || 5.0,
+        reviewsCount: Number(productData.reviewsCount) || 1,
+        stock: Number(productData.stock) || 10,
+        isPopular: !!productData.isPopular,
+        isNew: productData.isNew !== undefined ? !!productData.isNew : true,
+        isFeatured: !!productData.isFeatured,
+        image: productData.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80",
+        images: productData.images || [productData.image],
+        description: productData.description || "",
+        tags: productData.tags || [productData.name.toLowerCase(), productData.category],
+        specs: productData.specs || {}
+      };
+      products.unshift(savedProduct);
+    }
+
     localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-    return newProduct;
+
+    // Push to Supabase Cloud
+    if (this.supabase) {
+      this.supabase.from('products').upsert({
+        id: savedProduct.id,
+        name: savedProduct.name,
+        category_id: savedProduct.category,
+        brand: savedProduct.brand,
+        price: savedProduct.price,
+        old_price: savedProduct.oldPrice,
+        discount: savedProduct.discount,
+        stock: savedProduct.stock,
+        image: savedProduct.image,
+        images: savedProduct.images,
+        description: savedProduct.description,
+        rating: savedProduct.rating,
+        reviews_count: savedProduct.reviewsCount,
+        is_featured: savedProduct.isFeatured,
+        is_popular: savedProduct.isPopular,
+        is_new: savedProduct.isNew
+      }).then(({ error }) => {
+        if (error) console.error("Supabase maxsulot saqlash xatosi:", error);
+      });
+    }
+
+    return savedProduct;
   }
 
   deleteProduct(id) {
     let products = this.getProducts();
     products = products.filter(p => p.id !== id);
     localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+
+    if (this.supabase) {
+      this.supabase.from('products').delete().eq('id', id).then();
+    }
     return true;
   }
 
@@ -145,11 +303,10 @@ class StoreDB {
     rating = 0,
     onlyDiscount = false,
     inStockOnly = false,
-    sortBy = "popular" // popular, price-asc, price-desc, new, rating
+    sortBy = "popular"
   }) {
     let products = this.getProducts();
 
-    // 1. Search Query Filter (Checks name, description, brand, category, tags)
     if (query && query.trim() !== "") {
       const q = query.trim().toLowerCase();
       products = products.filter(p => {
@@ -162,35 +319,28 @@ class StoreDB {
       });
     }
 
-    // 2. Category Filter
     if (category && category !== "all") {
       products = products.filter(p => p.category === category);
     }
 
-    // 3. Brand Filter
     if (brand && brand !== "all") {
       products = products.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
     }
 
-    // 4. Price Range Filter
     products = products.filter(p => p.price >= minPrice && p.price <= maxPrice);
 
-    // 5. Rating Filter
     if (rating > 0) {
       products = products.filter(p => (p.rating || 0) >= rating);
     }
 
-    // 6. Only Discount Filter
     if (onlyDiscount) {
       products = products.filter(p => p.discount > 0 || (p.oldPrice && p.oldPrice > p.price));
     }
 
-    // 7. In Stock Filter
     if (inStockOnly) {
       products = products.filter(p => (p.stock || 0) > 0);
     }
 
-    // 8. Sorting
     switch (sortBy) {
       case "price-asc":
         products.sort((a, b) => a.price - b.price);
@@ -253,6 +403,14 @@ class StoreDB {
       categories.push(category);
     }
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+
+    if (this.supabase) {
+      this.supabase.from('categories').upsert({
+        id: category.id,
+        name: category.name,
+        icon: category.icon
+      }).then();
+    }
     return category;
   }
 
@@ -260,6 +418,10 @@ class StoreDB {
     let categories = this.getCategories();
     categories = categories.filter(c => c.id !== id);
     localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+
+    if (this.supabase) {
+      this.supabase.from('categories').delete().eq('id', id).then();
+    }
     return true;
   }
 
@@ -290,7 +452,7 @@ class StoreDB {
         name: orderData.customer.name,
         phone: orderData.customer.phone,
         address: orderData.customer.address,
-        city: orderData.customer.city || "Toshkent",
+        city: orderData.customer.city || "Toshkent shahri",
         notes: orderData.customer.notes || ""
       },
       items: orderData.items || [],
@@ -307,18 +469,45 @@ class StoreDB {
       ]
     };
 
-    // Update stock of purchased items
+    // Stock update
     const products = this.getProducts();
     newOrder.items.forEach(item => {
       const pIndex = products.findIndex(p => p.id === item.id);
       if (pIndex !== -1 && products[pIndex].stock) {
         products[pIndex].stock = Math.max(0, products[pIndex].stock - item.quantity);
+        if (this.supabase) {
+          this.supabase.from('products').update({ stock: products[pIndex].stock }).eq('id', item.id).then();
+        }
       }
     });
     localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
 
     orders.unshift(newOrder);
     localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+
+    // Sync to Supabase
+    if (this.supabase) {
+      this.supabase.from('orders').insert({
+        id: newOrder.id,
+        customer_name: newOrder.customer.name,
+        customer_phone: newOrder.customer.phone,
+        customer_city: newOrder.customer.city,
+        customer_address: newOrder.customer.address,
+        customer_notes: newOrder.customer.notes,
+        items: newOrder.items,
+        subtotal: newOrder.subtotal,
+        discount_amount: newOrder.discountAmount,
+        promo_code: newOrder.promoCode,
+        shipping_cost: newOrder.shippingCost,
+        total_amount: newOrder.totalAmount,
+        payment_method: newOrder.paymentMethod,
+        delivery_type: newOrder.deliveryType,
+        status: newOrder.status
+      }).then(({ error }) => {
+        if (error) console.error("Supabase buyurtma saqlash xatosi:", error);
+      });
+    }
+
     return newOrder;
   }
 
@@ -348,6 +537,11 @@ class StoreDB {
     });
 
     localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+
+    if (this.supabase) {
+      this.supabase.from('orders').update({ status: newStatus }).eq('id', orderId).then();
+    }
+
     return orders[index];
   }
 
@@ -355,7 +549,27 @@ class StoreDB {
     let orders = this.getOrders();
     orders = orders.filter(o => o.id !== orderId);
     localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+
+    if (this.supabase) {
+      this.supabase.from('orders').delete().eq('id', orderId).then();
+    }
     return true;
+  }
+
+  saveSellerApplication(appData) {
+    if (this.supabase) {
+      this.supabase.from('seller_applications').insert({
+        applicant_name: appData.name,
+        phone: appData.phone,
+        shop_name: appData.shop || "",
+        category: appData.category,
+        city: appData.city,
+        comment: appData.comment || "",
+        status: 'pending'
+      }).then(({ error }) => {
+        if (error) console.error("Supabase sotuvchi arizasi saqlash xatosi:", error);
+      });
+    }
   }
 
   /* ====================== PROMO CODES ====================== */
@@ -399,6 +613,16 @@ class StoreDB {
       promos.push(promo);
     }
     localStorage.setItem(STORAGE_KEYS.PROMOS, JSON.stringify(promos));
+
+    if (this.supabase) {
+      this.supabase.from('promos').upsert({
+        code: promo.code,
+        discount_percent: promo.discountPercent,
+        min_amount: promo.minAmount,
+        description: promo.description,
+        is_active: true
+      }).then();
+    }
     return promo;
   }
 
@@ -406,6 +630,10 @@ class StoreDB {
     let promos = this.getPromoCodes();
     promos = promos.filter(p => p.code.toUpperCase() !== code.toUpperCase());
     localStorage.setItem(STORAGE_KEYS.PROMOS, JSON.stringify(promos));
+
+    if (this.supabase) {
+      this.supabase.from('promos').delete().eq('code', code).then();
+    }
     return true;
   }
 
@@ -422,6 +650,22 @@ class StoreDB {
     const current = this.getSettings();
     const updated = { ...current, ...settings };
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updated));
+
+    if (this.supabase) {
+      this.supabase.from('store_settings').upsert({
+        id: 1,
+        store_name: updated.storeName || "MegaStore",
+        phone: updated.phone || "+998 90 123-45-67",
+        email: updated.email || "support@megastore.uz",
+        address: updated.address || "Toshkent sh., Amir Temur 45",
+        telegram_bot_token: updated.telegramToken || "8657815229:AAEV2N7L0-nQhEcmX5L49d5wyTBWaaKk1l4",
+        telegram_chat_id: updated.telegramChatId || "",
+        telegram_notifications_enabled: updated.notificationsEnabled !== undefined ? updated.notificationsEnabled : true,
+        free_shipping_threshold: updated.freeShippingThreshold || 500000,
+        standard_shipping_cost: updated.standardShippingCost || 20000,
+        express_shipping_cost: updated.expressShippingCost || 45000
+      }).then();
+    }
     return updated;
   }
 
@@ -469,7 +713,6 @@ class StoreDB {
     const outOfStockCount = products.filter(p => (p.stock || 0) <= 0).length;
     const lowStockCount = products.filter(p => (p.stock || 0) > 0 && (p.stock || 0) <= 5).length;
 
-    // Top selling products aggregation
     const productSalesMap = {};
     orders.forEach(order => {
       if (order.status !== 'cancelled' && Array.isArray(order.items)) {
@@ -494,7 +737,6 @@ class StoreDB {
       .sort((a, b) => b.soldCount - a.soldCount)
       .slice(0, 5);
 
-    // Sales by day (Last 7 days)
     const last7Days = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
@@ -528,7 +770,6 @@ class StoreDB {
     };
   }
 
-  /* Reset database to default */
   resetToDefault() {
     localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
     localStorage.removeItem(STORAGE_KEYS.CATEGORIES);
