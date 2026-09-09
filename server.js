@@ -21,6 +21,9 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('*', (req, res) => {
+  if (path.extname(req.path)) {
+    return res.status(404).send('File not found');
+  }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
